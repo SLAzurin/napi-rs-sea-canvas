@@ -1,5 +1,7 @@
 const { existsSync, readFileSync } = require('fs')
 const { join } = require('path')
+const sea = require('sea')
+const { createRequire } = require('node:module');
 
 const { platform, arch } = process
 
@@ -20,6 +22,7 @@ function isMusl() {
     return !glibcVersionRuntime
   }
 }
+let nativeBinding
 
 switch (platform) {
   case 'android':
@@ -27,10 +30,10 @@ switch (platform) {
       case 'arm64':
         localFileExisted = existsSync(join(__dirname, 'skia.android-arm64.node'))
         try {
-          if (localFileExisted) {
-            nativeBinding = require('./skia.android-arm64.node')
+          if (localFileExisted || sea.isSea()) {
+            nativeBinding = './skia.android-arm64.node'
           } else {
-            nativeBinding = require('@napi-rs/canvas-android-arm64')
+            nativeBinding = '@napi-rs/canvas-android-arm64'
           }
         } catch (e) {
           loadError = e
@@ -39,10 +42,10 @@ switch (platform) {
       case 'arm':
         localFileExisted = existsSync(join(__dirname, 'skia.android-arm-eabi.node'))
         try {
-          if (localFileExisted) {
-            nativeBinding = require('./skia.android-arm-eabi.node')
+          if (localFileExisted || sea.isSea()) {
+            nativeBinding = './skia.android-arm-eabi.node'
           } else {
-            nativeBinding = require('@napi-rs/canvas-android-arm-eabi')
+            nativeBinding = '@napi-rs/canvas-android-arm-eabi'
           }
         } catch (e) {
           loadError = e
@@ -57,10 +60,10 @@ switch (platform) {
       case 'x64':
         localFileExisted = existsSync(join(__dirname, 'skia.win32-x64-msvc.node'))
         try {
-          if (localFileExisted) {
-            nativeBinding = require('./skia.win32-x64-msvc.node')
+          if (localFileExisted || sea.isSea()) {
+            nativeBinding = './skia.win32-x64-msvc.node'
           } else {
-            nativeBinding = require('@napi-rs/canvas-win32-x64-msvc')
+            nativeBinding = '@napi-rs/canvas-win32-x64-msvc'
           }
         } catch (e) {
           loadError = e
@@ -69,10 +72,10 @@ switch (platform) {
       case 'ia32':
         localFileExisted = existsSync(join(__dirname, 'skia.win32-ia32-msvc.node'))
         try {
-          if (localFileExisted) {
-            nativeBinding = require('./skia.win32-ia32-msvc.node')
+          if (localFileExisted || sea.isSea()) {
+            nativeBinding = './skia.win32-ia32-msvc.node'
           } else {
-            nativeBinding = require('@napi-rs/canvas-win32-ia32-msvc')
+            nativeBinding = '@napi-rs/canvas-win32-ia32-msvc'
           }
         } catch (e) {
           loadError = e
@@ -81,10 +84,10 @@ switch (platform) {
       case 'arm64':
         localFileExisted = existsSync(join(__dirname, 'skia.win32-arm64-msvc.node'))
         try {
-          if (localFileExisted) {
-            nativeBinding = require('./skia.win32-arm64-msvc.node')
+          if (localFileExisted || sea.isSea()) {
+            nativeBinding = './skia.win32-arm64-msvc.node'
           } else {
-            nativeBinding = require('@napi-rs/canvas-win32-arm64-msvc')
+            nativeBinding = '@napi-rs/canvas-win32-arm64-msvc'
           }
         } catch (e) {
           loadError = e
@@ -99,10 +102,10 @@ switch (platform) {
       case 'x64':
         localFileExisted = existsSync(join(__dirname, 'skia.darwin-x64.node'))
         try {
-          if (localFileExisted) {
-            nativeBinding = require('./skia.darwin-x64.node')
+          if (localFileExisted || sea.isSea()) {
+            nativeBinding = './skia.darwin-x64.node'
           } else {
-            nativeBinding = require('@napi-rs/canvas-darwin-x64')
+            nativeBinding = '@napi-rs/canvas-darwin-x64'
           }
         } catch (e) {
           loadError = e
@@ -111,10 +114,10 @@ switch (platform) {
       case 'arm64':
         localFileExisted = existsSync(join(__dirname, 'skia.darwin-arm64.node'))
         try {
-          if (localFileExisted) {
-            nativeBinding = require('./skia.darwin-arm64.node')
+          if (localFileExisted || sea.isSea()) {
+            nativeBinding = './skia.darwin-arm64.node'
           } else {
-            nativeBinding = require('@napi-rs/canvas-darwin-arm64')
+            nativeBinding = '@napi-rs/canvas-darwin-arm64'
           }
         } catch (e) {
           loadError = e
@@ -130,10 +133,10 @@ switch (platform) {
     }
     localFileExisted = existsSync(join(__dirname, 'skia.freebsd-x64.node'))
     try {
-      if (localFileExisted) {
-        nativeBinding = require('./skia.freebsd-x64.node')
+      if (localFileExisted || sea.isSea()) {
+        nativeBinding = './skia.freebsd-x64.node'
       } else {
-        nativeBinding = require('@napi-rs/canvas-freebsd-x64')
+        nativeBinding = '@napi-rs/canvas-freebsd-x64'
       }
     } catch (e) {
       loadError = e
@@ -145,10 +148,10 @@ switch (platform) {
         if (isMusl()) {
           localFileExisted = existsSync(join(__dirname, 'skia.linux-x64-musl.node'))
           try {
-            if (localFileExisted) {
-              nativeBinding = require('./skia.linux-x64-musl.node')
+            if (localFileExisted || sea.isSea()) {
+              nativeBinding = './skia.linux-x64-musl.node'
             } else {
-              nativeBinding = require('@napi-rs/canvas-linux-x64-musl')
+              nativeBinding = '@napi-rs/canvas-linux-x64-musl'
             }
           } catch (e) {
             loadError = e
@@ -156,10 +159,10 @@ switch (platform) {
         } else {
           localFileExisted = existsSync(join(__dirname, 'skia.linux-x64-gnu.node'))
           try {
-            if (localFileExisted) {
-              nativeBinding = require('./skia.linux-x64-gnu.node')
+            if (localFileExisted || sea.isSea()) {
+              nativeBinding = './skia.linux-x64-gnu.node'
             } else {
-              nativeBinding = require('@napi-rs/canvas-linux-x64-gnu')
+              nativeBinding = '@napi-rs/canvas-linux-x64-gnu'
             }
           } catch (e) {
             loadError = e
@@ -170,10 +173,10 @@ switch (platform) {
         if (isMusl()) {
           localFileExisted = existsSync(join(__dirname, 'skia.linux-arm64-musl.node'))
           try {
-            if (localFileExisted) {
-              nativeBinding = require('./skia.linux-arm64-musl.node')
+            if (localFileExisted || sea.isSea()) {
+              nativeBinding = './skia.linux-arm64-musl.node'
             } else {
-              nativeBinding = require('@napi-rs/canvas-linux-arm64-musl')
+              nativeBinding = '@napi-rs/canvas-linux-arm64-musl'
             }
           } catch (e) {
             loadError = e
@@ -181,10 +184,10 @@ switch (platform) {
         } else {
           localFileExisted = existsSync(join(__dirname, 'skia.linux-arm64-gnu.node'))
           try {
-            if (localFileExisted) {
-              nativeBinding = require('./skia.linux-arm64-gnu.node')
+            if (localFileExisted || sea.isSea()) {
+              nativeBinding = './skia.linux-arm64-gnu.node'
             } else {
-              nativeBinding = require('@napi-rs/canvas-linux-arm64-gnu')
+              nativeBinding = '@napi-rs/canvas-linux-arm64-gnu'
             }
           } catch (e) {
             loadError = e
@@ -194,10 +197,10 @@ switch (platform) {
       case 'arm':
         localFileExisted = existsSync(join(__dirname, 'skia.linux-arm-gnueabihf.node'))
         try {
-          if (localFileExisted) {
-            nativeBinding = require('./skia.linux-arm-gnueabihf.node')
+          if (localFileExisted || sea.isSea()) {
+            nativeBinding = './skia.linux-arm-gnueabihf.node'
           } else {
-            nativeBinding = require('@napi-rs/canvas-linux-arm-gnueabihf')
+            nativeBinding = '@napi-rs/canvas-linux-arm-gnueabihf'
           }
         } catch (e) {
           loadError = e
@@ -209,6 +212,12 @@ switch (platform) {
     break
   default:
     throw new Error(`Unsupported OS: ${platform}, architecture: ${arch}`)
+}
+
+if (sea.isSea()) {
+  nativeBinding = createRequire(nativeBinding)
+} else {
+  nativeBinding = require(nativeBinding)
 }
 
 if (!nativeBinding) {
